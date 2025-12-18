@@ -2,22 +2,58 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>テスト</title>
+  <title>QRチェック</title>
 </head>
 <body>
 
-<h1 id="result">token確認中...</h1>
+<h1 id="result">確認中...</h1>
 
-<script>
-  const params = new URLSearchParams(location.search);
-  const token = params.get("token");
+<script type="module">
+  // Firebase SDK 読み込み
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
+  // Firebase 設定（あなたのもの）
+  const firebaseConfig = {
+    apiKey: "AIzaSyDHyOMKnWzXcUNvUYSEpWSRxKXcu_aypXU",
+    authDomain: "night10.firebaseapp.com",
+    projectId: "night10",
+    storageBucket: "night10.firebasestorage.app",
+    messagingSenderId: "77953496176",
+    appId: "1:77953496176:web:11ce949411391203e330b5"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
   const el = document.getElementById("result");
+
+  // URLから token を取得
+  const params = new URLSearchParams(location.search);
+  const token = params.get("token");
 
   if (!token) {
     el.textContent = "❌ token がありません";
   } else {
-    el.textContent = "✅ token = " + token;
+    checkToken(token);
+  }
+
+  async function checkToken(token) {
+    try {
+      const ref = doc(db, "tokens", token);
+      const snap = await getDoc(ref);
+
+      if (!snap.exists()) {
+        el.textContent = "❌ このQRは存在しません";
+        return;
+      }
+
+      el.textContent = "✅ このQRは存在します（まだ未使用）";
+
+    } catch (e) {
+      console.error(e);
+      el.textContent = "❌ エラーが発生しました";
+    }
   }
 </script>
 
