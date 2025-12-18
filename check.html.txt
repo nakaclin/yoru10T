@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>テスト</title>
+</head>
+<body>
+
+<h1 id="result">token確認中...</h1>
+
+<script>
+  const params = new URLSearchParams(location.search);
+  const token = params.get("token");
+
+  const el = document.getElementById("result");
+
+  if (!token) {
+    el.textContent = "❌ token がありません";
+  } else {
+    el.textContent = "✅ token = " + token;
+  }
+</script>
+
+</body>
+</html>
